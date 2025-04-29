@@ -21,6 +21,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as yup from "yup";
+import { Suspense } from "react";
 
 const childSchema = yup
   .object({
@@ -269,4 +270,10 @@ function ChildrenSelection() {
   );
 }
 
-export default ChildrenSelection;
+export default function ChildrenPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ChildrenSelection />
+    </Suspense>
+  );
+}
