@@ -15,7 +15,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { UserPlus } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as yup from "yup";
@@ -269,4 +269,10 @@ function ChildrenSelection() {
   );
 }
 
-export default ChildrenSelection;
+export default function ChildrenPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ChildrenSelection />
+    </Suspense>
+  );
+}
