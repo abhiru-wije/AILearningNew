@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useRef, useEffect, Suspense } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { CheckCircle } from 'lucide-react';
 
-function VideoLessonContent() {
+export default function VideoLesson() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const level = searchParams.get('level') || '1';
@@ -61,13 +61,5 @@ function VideoLessonContent() {
         </Button>
       </div>
     </div>
-  );
-}
-
-export default function VideoLesson() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <VideoLessonContent />
-    </Suspense>
   );
 } 

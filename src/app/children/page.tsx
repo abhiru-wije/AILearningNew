@@ -10,9 +10,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { API_ENDPOINTS } from "@/config/api";
-import { useApi } from "@/hooks/useApi";
-import { ChildLoginResponse, ChildSignupResponse, NewChildInfo, ParentInfo } from "@/types/api";
+import { ChildSignupResponse, NewChildInfo, ParentInfo } from "@/types/api";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { UserPlus } from "lucide-react";
 import { signIn } from "next-auth/react";
@@ -21,7 +19,6 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as yup from "yup";
-import { Suspense } from "react";
 
 const childSchema = yup
   .object({
@@ -61,10 +58,6 @@ function ChildrenSelection() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const { execute: createChild } = useApi<ChildSignupResponse>();
-  const {execute: childLogin} = useApi<ChildLoginResponse>()
-
-
   const {
     register,
     handleSubmit,
@@ -86,10 +79,19 @@ function ChildrenSelection() {
       parent_id: parentInfo?.parent.parent_id
     }
 
-    const result = await createChild(API_ENDPOINTS.CHILD_SIGNUP, {
-      method: "POST",
+    const response = await fetch('/api/child', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(reqBody),
     });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Failed to add child');
+    }
 
     if (result?.error) {
       setError("Cannot create child");
@@ -97,7 +99,7 @@ function ChildrenSelection() {
       setLoading(false);
       setHasChild(true);
       setAddDialogOpen(false);
-      setCreatedChild(result?.data);
+      setCreatedChild(result);
     }
   };
 
@@ -207,9 +209,6 @@ function ChildrenSelection() {
         </div>
        
         )}
-      
-
-      
 
       <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
         <DialogContent>
@@ -270,10 +269,4 @@ function ChildrenSelection() {
   );
 }
 
-export default function ChildrenPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <ChildrenSelection />
-    </Suspense>
-  );
-}
+export default ChildrenSelection;

@@ -1,8 +1,6 @@
 "use client";
 
-import { API_ENDPOINTS } from "@/config/api";
-import { useApi } from "@/hooks/useApi";
-import { LoginRequest, LoginResponse } from "@/types/api";
+import { LoginRequest } from "@/types/api";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Montserrat } from "next/font/google";
 import Image from "next/image";
@@ -10,8 +8,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
 import * as yup from "yup";
-import { toast } from "sonner"
 
 const montserrat = Montserrat({ subsets: ["latin"] });
 
@@ -38,7 +36,6 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const { execute: login } = useApi<LoginResponse>();
 
   const {
     register,
@@ -60,10 +57,19 @@ export default function LoginPage() {
       password: data.password,
     };
 
-    const result = await login(API_ENDPOINTS.LOGIN, {
-      method: "POST",
+    const response = await fetch('/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(loginData),
     });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || 'Signup failed');
+    }
 
     setLoading(false);
 
@@ -72,10 +78,7 @@ export default function LoginPage() {
     } else {
       toast("Successfully logged in")
 
-      const params = new URLSearchParams(
-        JSON.stringify(result.data)
-      ).toString();
-      router.push(`/children?params=${JSON.stringify(result.data)}`);
+      router.push(`/children?params=${JSON.stringify(result)}`);
 
     }
   };
