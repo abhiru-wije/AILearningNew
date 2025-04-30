@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { CheckCircle } from 'lucide-react';
 
-export function VideoLessonContent() {
+function VideoLessonContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const level = searchParams.get('level') || '1';
