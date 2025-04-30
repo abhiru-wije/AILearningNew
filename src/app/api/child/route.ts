@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
-import axios, { AxiosError } from 'axios';
-import { API_ENDPOINTS } from '@/config/api';
+import { NextResponse } from "next/server";
+import axios, { AxiosError } from "axios";
+import { API_ENDPOINTS } from "@/config/api";
 
 interface ErrorResponse {
   message?: string;
@@ -15,13 +15,13 @@ export async function POST(request: Request) {
     // Validate the request body
     if (!parent_id || !firstname || !lastname || !body.class) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
 
     // Make the API call to your backend server
-    const response = await axios.post(API_ENDPOINTS.SIGNUP, {
+    const response = await axios.post(API_ENDPOINTS.CHILD_SIGNUP, {
       firstname,
       lastname,
       parent_id,
@@ -31,22 +31,22 @@ export async function POST(request: Request) {
     // Return the response from the backend server
     return NextResponse.json(response.data);
   } catch (error) {
-    console.error('Signup error:', error);
-    
+    console.error("Signup error:", error);
+
     // Handle different types of errors
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError<ErrorResponse>;
       // If it's an Axios error, forward the error response from the backend
       return NextResponse.json(
-        { error: axiosError.response?.data?.message || 'Signup failed' },
+        { error: axiosError.response?.data?.message || "Signup failed" },
         { status: axiosError.response?.status || 500 }
       );
     }
 
     // For other types of errors
     return NextResponse.json(
-      { error: 'An unexpected error occurred' },
+      { error: "An unexpected error occurred" },
       { status: 500 }
     );
   }
-} 
+}
