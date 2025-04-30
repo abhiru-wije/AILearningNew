@@ -1,13 +1,12 @@
 "use client";
 
-import { API_ENDPOINTS } from "@/config/api";
-import { useApi } from "@/hooks/useApi";
-import { SignupRequest, SignupResponse } from "@/types/api";
+import { SignupRequest } from "@/types/api";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Montserrat } from "next/font/google";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
@@ -51,7 +50,8 @@ const schema = yup.object().shape({
 
 export default function SignupPage() {
   const router = useRouter();
-  const { execute: signup, loading, error } = useApi<SignupResponse>();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     register,
@@ -62,21 +62,37 @@ export default function SignupPage() {
   });
 
   const onSubmit = async (data: FormData) => {
-    const signupData: SignupRequest = {
-      email: data.email,
-      firstname: data.firstName,
-      lastname: data.lastName,
-      mobile_number: data.phoneNumber,
-      password: data.password,
-    };
+    try {
+      setLoading(true);
+      setError(null);
 
-    const result = await signup(API_ENDPOINTS.SIGNUP, {
-      method: "POST",
-      body: JSON.stringify(signupData),
-    });
+      const signupData: SignupRequest = {
+        email: data.email,
+        firstname: data.firstName,
+        lastname: data.lastName,
+        mobile_number: data.phoneNumber,
+        password: data.password,
+      };
 
-    if (result.data) {
+      const response = await fetch('/api/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(signupData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Signup failed');
+      }
+
       router.push("/login");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -252,13 +268,13 @@ export default function SignupPage() {
               <div className="ml-3 text-sm">
                 <label htmlFor="terms" className="font-medium text-gray-700">
                   I agree to the{" "}
-                  <a href="#" className="text-blue-600 hover:text-blue-500">
+                  <Link href="/terms" className="text-blue-600 hover:text-blue-500">
                     Terms of Service
-                  </a>{" "}
+                  </Link>{" "}
                   and{" "}
-                  <a href="#" className="text-blue-600 hover:text-blue-500">
+                  <Link href="/privacy" className="text-blue-600 hover:text-blue-500">
                     Privacy Policy
-                  </a>
+                  </Link>
                 </label>
                 {errors.terms && (
                   <p className="mt-1 text-sm text-red-600">
@@ -268,37 +284,29 @@ export default function SignupPage() {
               </div>
             </div>
 
-            <div>
-              <button
-                disabled={isSubmitting || loading}
-                type="submit"
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200"
-              >
-                Create Account
-              </button>
-            </div>
-          </form>
+            <button
+              type="submit"
+              disabled={loading || isSubmitting}
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Creating Account..." : "Create Account"}
+            </button>
 
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
+            <p className="text-center text-sm text-gray-600">
               Already have an account?{" "}
-              <Link
-                href="/login"
-                className="font-medium text-blue-600 hover:text-blue-500"
-              >
+              <Link href="/login" className="text-blue-600 hover:text-blue-500">
                 Sign in
               </Link>
             </p>
-          </div>
+          </form>
         </div>
       </div>
 
       {/* Right side - Image */}
-      <div className="hidden md:block md:w-1/2 relative">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 z-10" />
+      <div className="hidden md:block w-1/2 relative">
         <Image
-          src="/signup.jpg"
-          alt="Happy children"
+          src="/signup-image.jpg"
+          alt="Signup"
           fill
           className="object-cover"
           priority

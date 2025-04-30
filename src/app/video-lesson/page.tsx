@@ -9,7 +9,7 @@ function VideoLessonContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const level = searchParams.get('level') || '1';
-
+  
   const [videoEnded, setVideoEnded] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -35,7 +35,7 @@ function VideoLessonContent() {
           controls
           autoPlay
           onEnded={handleVideoEnd}
-          src="/assets/videos/lesson1.mp4"
+          src="/assets/videos/lesson1.mp4" 
         >
           Your browser does not support the video tag.
         </video>
@@ -46,14 +46,15 @@ function VideoLessonContent() {
         <div className="text-white text-xl font-bold">
           Level {level}
         </div>
-
+        
         <Button
           onClick={handleCompleteLesson}
           disabled={!videoEnded}
-          className={`flex items-center gap-2 ${videoEnded
-              ? 'bg-green-600 hover:bg-green-700'
+          className={`flex items-center gap-2 ${
+            videoEnded 
+              ? 'bg-green-600 hover:bg-green-700' 
               : 'bg-gray-600 cursor-not-allowed'
-            }`}
+          }`}
         >
           {videoEnded && <CheckCircle className="h-5 w-5" />}
           {videoEnded ? 'Complete Lesson' : 'Watch the video to complete'}
