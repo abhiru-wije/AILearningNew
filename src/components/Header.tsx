@@ -53,32 +53,40 @@ export default function Header() {
           </span>
         </Link>
 
-      <div className="flex gap-6 items-center">
-      <Button onClick={() => router.push('/child-dashboard')}>Stat Session</Button>
+        <div className="flex gap-6 items-center">
+          <Button
+            className="cursor-pointer"
+            onClick={() => router.push("/child-dashboard")}
+          >
+            Stat Session
+          </Button>
 
-<DropdownMenu>
-  <DropdownMenuTrigger asChild>
-    <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-      <Avatar>
-        <AvatarImage src="/logo.png" />
-        <AvatarFallback>{Config.APP_NAME}</AvatarFallback>
-      </Avatar>
-    </Button>
-  </DropdownMenuTrigger>
-  <DropdownMenuContent className="w-56" align="end">
-    <DropdownMenuItem onClick={() => router.push("/profile")}>
-      <Settings className="mr-2 h-4 w-4" />
-      <span>Profile Settings</span>
-    </DropdownMenuItem>
-    <DropdownMenuSeparator />
-    <DropdownMenuItem onClick={handleLogout}>
-      <LogOut className="mr-2 h-4 w-4" />
-      <span>Logout</span>
-    </DropdownMenuItem>
-    <DropdownMenuSeparator />
-  </DropdownMenuContent>
-</DropdownMenu>
-      </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                className="relative h-10 w-10 rounded-full"
+              >
+                <Avatar>
+                  <AvatarImage src="/logo.png" />
+                  <AvatarFallback>{Config.APP_NAME}</AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="end">
+              <DropdownMenuItem onClick={() => router.push("/profile")}>
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Profile Settings</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Logout</span>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </header>
   );

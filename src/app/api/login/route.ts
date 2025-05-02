@@ -1,6 +1,6 @@
-import { NextResponse } from 'next/server';
-import axios, { AxiosError } from 'axios';
-import { API_ENDPOINTS } from '@/config/api';
+import { NextResponse } from "next/server";
+import axios, { AxiosError } from "axios";
+import { API_ENDPOINTS } from "@/config/api";
 
 interface ErrorResponse {
   message?: string;
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     // Validate the request body
     if (!email || !password) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: "Missing required fields" },
         { status: 400 }
       );
     }
@@ -29,22 +29,28 @@ export async function POST(request: Request) {
     // Return the response from the backend server
     return NextResponse.json(response.data);
   } catch (error) {
-    console.error('Login error:', error);
-    
     // Handle different types of errors
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError<ErrorResponse>;
       // If it's an Axios error, forward the error response from the backend
+
+      if (axiosError.status === 401) {
+        return NextResponse.json(
+          { error: "Invalid email or password" },
+          { status: 401 }
+        );
+      }
+
       return NextResponse.json(
-        { error: axiosError.response?.data?.message || 'Signup failed' },
+        { error: axiosError.response?.data?.error || "Login failed" },
         { status: axiosError.response?.status || 500 }
       );
     }
 
     // For other types of errors
     return NextResponse.json(
-      { error: 'An unexpected error occurred' },
+      { error: "An unexpected error occurred" },
       { status: 500 }
     );
   }
-} 
+}

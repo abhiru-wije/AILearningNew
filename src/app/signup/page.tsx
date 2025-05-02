@@ -74,10 +74,10 @@ export default function SignupPage() {
         password: data.password,
       };
 
-      const response = await fetch('/api/signup', {
-        method: 'POST',
+      const response = await fetch("/api/signup", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(signupData),
       });
@@ -85,12 +85,14 @@ export default function SignupPage() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || 'Signup failed');
+        throw new Error(result.error || "Signup failed");
       }
 
       router.push("/login");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'An unexpected error occurred');
+      setError(
+        err instanceof Error ? err.message : "An unexpected error occurred"
+      );
     } finally {
       setLoading(false);
     }
@@ -268,11 +270,17 @@ export default function SignupPage() {
               <div className="ml-3 text-sm">
                 <label htmlFor="terms" className="font-medium text-gray-700">
                   I agree to the{" "}
-                  <Link href="/terms" className="text-blue-600 hover:text-blue-500">
+                  <Link
+                    href="/terms"
+                    className="text-blue-600 hover:text-blue-500"
+                  >
                     Terms of Service
                   </Link>{" "}
                   and{" "}
-                  <Link href="/privacy" className="text-blue-600 hover:text-blue-500">
+                  <Link
+                    href="/privacy"
+                    className="text-blue-600 hover:text-blue-500"
+                  >
                     Privacy Policy
                   </Link>
                 </label>
@@ -305,7 +313,7 @@ export default function SignupPage() {
       {/* Right side - Image */}
       <div className="hidden md:block w-1/2 relative">
         <Image
-          src="/signup-image.jpg"
+          src="/signup.jpg"
           alt="Signup"
           fill
           className="object-cover"

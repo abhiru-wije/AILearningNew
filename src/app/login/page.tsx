@@ -36,7 +36,6 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-
   const {
     register,
     handleSubmit,
@@ -57,29 +56,31 @@ export default function LoginPage() {
       password: data.password,
     };
 
-    const response = await fetch('/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(loginData),
-    });
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+      });
 
-    const result = await response.json();
+      const result = await response.json();
 
-    if (!response.ok) {
-      throw new Error(result.error || 'Signup failed');
-    }
+      if (!response.ok) {
+        throw new Error(result.error || "Signup failed");
+      }
 
-    setLoading(false);
+      setLoading(false);
 
-    if (result?.error) {
-      setError("Invalid email or password");
-    } else {
-      toast("Successfully logged in")
+      toast("Successfully logged in");
 
       router.push(`/children?params=${JSON.stringify(result)}`);
-
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred";
+      setError(errorMessage);
+      setLoading(false);
     }
   };
 

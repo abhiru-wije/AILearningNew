@@ -15,7 +15,7 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/10 z-10" />
           <Image
-            src="/hero.jpeg"
+            src="/hero.png"
             alt="Children learning background"
             fill
             className="object-cover"

@@ -192,3 +192,217 @@ html {
     @apply bg-background text-foreground;
   }
 }
+
+.kids-button {
+  border: none;
+  color: white;
+  padding: 20px 40px;
+  height: 70px;
+  text-transform: uppercase;
+  border-radius: 40px;
+  font-size: 20px;
+  text-shadow: 1px 0 0 rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0px -3px 1px 0px rgba(255, 255, 255, 0.2);
+  position: relative;
+  cursor: pointer;
+}
+
+.kids-button:after {
+  content: "";
+  display: block;
+  height: 0.3rem;
+  position: absolute;
+  left: 5%;
+  top: 12px;
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  width: 0.75rem;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0px 0px 5px 5px rgba(255, 255, 255, 0.23);
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(hsla(0, 0%, 100%, 0)),
+    color-stop(20%, #fff),
+    color-stop(80%, #fff),
+    to(hsla(0, 0%, 100%, 0))
+  );
+  background-image: linear-gradient(
+    -270deg,
+    hsla(0, 0%, 100%, 0),
+    #fff 20%,
+    #fff 80%,
+    hsla(0, 0%, 100%, 0)
+  );
+}
+
+.kids-button:before {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  height: 100%;
+  border-radius: 40px;
+  width: 100%;
+  display: block;
+}
+
+.button-blue {
+  background: linear-gradient(0deg, #00d8ff, #1ce3ff);
+  background: rgb(0, 205, 242);
+  background: linear-gradient(
+    0deg,
+    rgba(0, 205, 242, 1) 0%,
+    rgba(28, 227, 255, 1) 50%,
+    rgba(0, 205, 242, 1) 100%
+  );
+}
+
+.button-blue:before {
+  box-shadow: 0 7px 13px -3px rgba(45, 35, 66, 0.3), 0 3px 0 -1px #149be3,
+    0 4px 0 -1px #02bcfa;
+}
+
+.button-red {
+  background: linear-gradient(
+    0deg,
+    rgba(242, 0, 0, 1) 0%,
+    rgba(255, 28, 28, 1) 50%,
+    rgba(242, 0, 0, 1) 100%
+  );
+  color: white;
+  border: none;
+  padding: 10px 30px;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.button-red:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  box-shadow: 0 7px 13px -3px rgba(66, 35, 35, 0.3), 0 3px 0 -1px #e31414,
+    0 4px 0 -1px #fa0202;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.map-step-button {
+  border: none;
+  color: white;
+  /* padding: 20px 40px; */
+  height: 250px;
+  width: 250px;
+  text-transform: uppercase;
+  border-radius: 100%;
+  font-size: 20px;
+  text-shadow: 1px 0 0 rgba(0, 0, 0, 0.1);
+  box-shadow: inset 0px -3px 1px 0px rgba(255, 255, 255, 0.2);
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-step-button:after {
+  content: "";
+  display: block;
+  height: 0.3rem;
+  position: absolute;
+  left: 20%;
+  top: 20%;
+  -webkit-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+  width: 0.75rem;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0px 0px 5px 5px rgba(255, 255, 255, 0.23);
+  background-image: -webkit-gradient(
+    linear,
+    left top,
+    right top,
+    from(hsla(0, 0%, 100%, 0)),
+    color-stop(20%, #fff),
+    color-stop(80%, #fff),
+    to(hsla(0, 0%, 100%, 0))
+  );
+  background-image: linear-gradient(
+    -270deg,
+    hsla(0, 0%, 100%, 0),
+    #fff 20%,
+    #fff 80%,
+    hsla(0, 0%, 100%, 0)
+  );
+}
+
+.map-step-button:before {
+  content: "";
+  position: absolute;
+  bottom: 0px;
+  left: 0;
+  height: 100%;
+  border-radius: 100%;
+  width: 100%;
+  display: block;
+}
+
+.map-step-button-red {
+  background: linear-gradient(0deg, #00d8ff, #1ce3ff);
+  background: rgb(0, 205, 242);
+  background: linear-gradient(
+    0deg,
+    rgba(0, 205, 242, 1) 0%,
+    rgba(28, 227, 255, 1) 50%,
+    rgba(0, 205, 242, 1) 100%
+  );
+}
+
+.map-step-button-red:before {
+  box-shadow: 0 7px 13px -3px rgba(45, 35, 66, 0.3), 0 3px 0 -1px #149be3,
+    0 4px 0 -1px #02bcfa;
+}
+
+/* Hello */
+.pin-badge {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  /* background-image: url("/assets/images/sea.jpg"); */
+  background-size: cover;
+  background-position: center;
+
+  /* Outer shadow for 3D lift */
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3),
+    inset 0 0 10px rgba(255, 255, 255, 0.3); /* Simulate gloss */
+
+  /* Optional metallic rim */
+  border: 5px solid #ccc;
+  box-sizing: border-box;
+
+  /* Light highlight for realism */
+  position: relative;
+}
+
+.pin-badge::after {
+  content: "";
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at top left,
+    rgba(255, 255, 255, 0.4),
+    transparent 70%
+  );
+  pointer-events: none;
+}

@@ -1,6 +1,8 @@
 "use client";
 
+import EndButton from "@/app/components/EndButton";
 import MapStepShape from "@/app/components/MapStepShape";
+import { PinBadge } from "@/app/components/PinBadge";
 import { motion } from "framer-motion";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -10,58 +12,44 @@ const mapSteps = [
   {
     id: 1,
     title: "Beach",
-    isLocked: false,
-    bgColor: "#FFD54F",
     position: "top-[10%] left-[20%]",
-    icon: "🏖️",
+    image: "/assets/images/sea.jpg",
   },
   {
     id: 2,
     title: "Country Side",
-    isLocked: false,
-    bgColor: "#81C784",
     position: "top-[30%] right-[25%]",
-    icon: "🌾",
+    image: "/assets/images/country.jpeg",
   },
   {
     id: 3,
     title: "Forest",
-    isLocked: true,
-    bgColor: "#4CAF50",
     position: "top-[50%] left-[30%]",
-    icon: "🌲",
+    image: "/assets/images/forest.jpg",
   },
   {
     id: 4,
     title: "River",
-    isLocked: false,
-    bgColor: "#4FC3F7",
     position: "top-[70%] right-[30%]",
-    icon: "🌊",
+    image: "/assets/images/river.jpg",
   },
   {
     id: 5,
     title: "Mountain",
-    isLocked: true,
-    bgColor: "#A1887F",
     position: "top-[90%] left-[25%]",
-    icon: "⛰️",
+    image: "/assets/images/mountain.webp",
   },
   {
     id: 6,
     title: "Park",
-    isLocked: true,
-    bgColor: "#8BC34A",
     position: "top-[110%] right-[20%]",
-    icon: "🎡",
+    image: "/assets/images/park.jpg",
   },
   {
     id: 7,
     title: "Quiz",
-    isLocked: true,
-    bgColor: "#FF7043",
     position: "top-[130%] left-[40%]",
-    icon: "❓",
+    image: "/assets/images/quiz.png",
   },
 ];
 
@@ -81,7 +69,6 @@ export default function Map() {
   const levelID = params.levelID as string;
 
   const [activeStep, setActiveStep] = useState<number | null>(null);
-  const [unlockedSteps, setUnlockedSteps] = useState<number[]>([1]); // Start with Beach unlocked
   const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
   const [containerHeight, setContainerHeight] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -111,16 +98,10 @@ export default function Map() {
 
   // Handle step click
   const handleStepClick = (topicId: number) => {
-    console.log(topicId, "topic");
-
-    if (!mapSteps[topicId - 1].isLocked) {
-      setActiveStep(topicId);
-      // Navigate to the appropriate page based on the step
-      if (topicId === 7) {
-        router.push(`/level/${levelID}/quiz`);
-      } else {
-        router.push(`/level/${levelID}/topic/${topicId}`);
-      }
+    if (topicId === 7) {
+      router.push(`/level/${levelID}/quiz`);
+    } else {
+      router.push(`/level/${levelID}/topic/${topicId}`);
     }
   };
 
@@ -169,17 +150,15 @@ export default function Map() {
       <div className="fixed inset-0 z-0">
         <img
           className="w-full h-full object-cover"
-          style={{ opacity: 0.85 }}
           src="/assets/images/map.jpg"
           alt="Adventure Map Background"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-blue-100/30 to-purple-100/30"></div>
       </div>
 
       {/* Fixed Header */}
       <div className="fixed top-0 left-0 right-0 z-20 pb-4 pt-2">
         <motion.h1
-          className="text-4xl md:text-6xl font-bold text-gray-800 text-center drop-shadow-lg"
+          className="text-4xl md:text-6xl font-bold text-gray-50 text-center drop-shadow-lg"
           initial={{ y: -50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, type: "spring" }}
@@ -187,7 +166,7 @@ export default function Map() {
           Your Adventure Map
         </motion.h1>
         <motion.p
-          className="text-xl md:text-3xl text-gray-700 mt-2 text-center drop-shadow-md"
+          className="text-xl md:text-3xl text-gray-200 mt-2 text-center drop-shadow-md"
           initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2, type: "spring" }}
@@ -250,96 +229,15 @@ export default function Map() {
               })}
             </svg>
 
-            {/* Map Steps */}
-            {mapSteps.map((step, index) => {
-              const isUnlocked = unlockedSteps.includes(step.id);
-
-              return (
-                <motion.div
-                  key={step.id}
-                  className={`absolute ${step.position} transform -translate-x-1/2 -translate-y-1/2`}
-                  variants={itemVariants}
-                  whileHover={{
-                    scale: 1.15,
-                    rotate: [0, -5, 5, -5, 0],
-                    transition: {
-                      rotate: {
-                        duration: 0.5,
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                      },
-                    },
-                  }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  <div className="relative">
-                    {/* Continuous floating animation for the icon */}
-                    <motion.div
-                      className="absolute -top-15 left-1/4 transform -translate-x-1/2 text-5xl"
-                      animate={{
-                        y: [0, -20, 0],
-                        rotate: [0, 5, 0, -5, 0],
-                      }}
-                      transition={{
-                        y: {
-                          duration: 2,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        },
-                        rotate: {
-                          duration: 3,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        },
-                        delay: index * 0.2,
-                      }}
-                    >
-                      {step.icon}
-                    </motion.div>
-
-                    {/* Continuous pulsing animation for the shape */}
-                    <motion.div
-                      className="relative"
-                      animate={{
-                        scale: [1, 1.05, 1],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                        delay: index * 0.2,
-                      }}
-                    >
-                      <MapStepShape
-                        id={step.id}
-                        title={step.title}
-                        isLocked={!isUnlocked}
-                        bgColor={step.bgColor}
-                        icon={step.icon}
-                        onClick={() => handleStepClick(step.id)}
-                      />
-                    </motion.div>
-
-                    {/* Add a pulsing effect for the active step */}
-                    {activeStep === step.id && (
-                      <motion.div
-                        className="absolute inset-0 rounded-full"
-                        style={{ boxShadow: `0 0 0 15px ${step.bgColor}80` }}
-                        animate={{
-                          scale: [1, 1.3, 1],
-                          opacity: [0.7, 0.3, 0.7],
-                        }}
-                        transition={{
-                          duration: 2,
-                          repeat: Infinity,
-                          ease: "easeInOut",
-                        }}
-                      />
-                    )}
-                  </div>
-                </motion.div>
-              );
-            })}
+            {mapSteps.map((step, index) => (
+              <PinBadge
+                key={step.id}
+                position={step.position}
+                image={step.image}
+                title={step.title}
+                onClick={() => handleStepClick(step.id)}
+              />
+            ))}
           </motion.div>
         </div>
       </div>
@@ -347,12 +245,10 @@ export default function Map() {
       {/* Fixed Back Button */}
       {/* Floating End Session Button */}
       <div className="fixed bottom-8 right-5 transform -translate-x-1/2 z-50">
-        <button
+        <EndButton
+          title="Leave Session"
           onClick={() => router.push("/dashboard")}
-          className="px-12 py-8 rounded-full bg-red-500 hover:bg-red-600 font-bold text-3xl text-white transform hover:scale-105 transition-all duration-300 ease-in-out"
-        >
-          Leave Session
-        </button>
+        />
       </div>
     </div>
   );
