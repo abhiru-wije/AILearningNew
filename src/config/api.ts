@@ -7,6 +7,9 @@ export const API_ENDPOINTS = {
   CHILD_LOGIN: `${API_BASE_URL}/child/login`,
   SIGNUP: `${API_BASE_URL}/parent/signup`,
   CHILD_SIGNUP: `${API_BASE_URL}/child/signup`,
+  CHILD_UPDATE: `${API_BASE_URL}/child`,
+  LESSONS: `${API_BASE_URL}/lessons`,
+  TOPIC_COMPLETION: `${API_BASE_URL}/user-lessons/topic-completion`,
   // Add other endpoints as needed
 };
 

@@ -1,8 +1,9 @@
 import { API_ENDPOINTS } from "@/config/api";
-import NextAuth from "next-auth";
+import { jwtDecode } from "jwt-decode";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -25,10 +26,12 @@ const handler = NextAuth({
 
           const user = await res.json();
 
-          console.log(user);
-
           if (res.ok && user.access_token) {
-            return { ...user };
+            const { user: sessionUser } = user;
+
+            console.log({ ...user, ...sessionUser });
+
+            return { ...user, ...sessionUser };
           }
 
           return null;
@@ -45,13 +48,41 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.accessToken = user.access_token;
+        token.access_token = user.access_token;
+        token.id = user.id;
+        token.firstname = user.firstname;
+        token.lastname = user.lastname;
+        token.class = user.class;
+        token.dob = user.dob;
       }
-      return token;
+
+      if (token?.access_token) {
+        try {
+          const decoded: { exp: number } = jwtDecode(token.access_token);
+          const isExpired = decoded.exp * 1000 < Date.now();
+
+          if (isExpired) {
+            throw new Error("Unauthorized: Token expired");
+          }
+
+          return token;
+        } catch (error) {
+          console.error("JWT decode/validation error:", error);
+          throw new Error("Unauthorized");
+        }
+      }
+
+      throw new Error("Unauthorized: No access token");
     },
     async session({ session, token }) {
-      if (token) {
+      if (token && session.user) {
         session.access_token = token.access_token;
+
+        session.user.id = token.id;
+        session.user.firstname = token.firstname;
+        session.user.lastname = token.lastname;
+        session.user.class = token.class;
+        session.user.dob = token.dob;
       }
       return session;
     },
@@ -60,6 +91,8 @@ const handler = NextAuth({
     strategy: "jwt",
   },
   secret: process.env.NEXTAUTH_SECRET,
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

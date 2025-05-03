@@ -56,7 +56,7 @@ export default function Header() {
         <div className="flex gap-6 items-center">
           <Button
             className="cursor-pointer"
-            onClick={() => router.push("/child-dashboard")}
+            onClick={() => router.push("/lessons")}
           >
             Stat Session
           </Button>

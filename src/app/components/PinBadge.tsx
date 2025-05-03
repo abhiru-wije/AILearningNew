@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { Lock } from "lucide-react";
 import React from "react";
 
 interface PinBadgeProps {
@@ -9,6 +10,7 @@ interface PinBadgeProps {
   onClick?: () => void;
   size?: number; // Optional: control badge size
   position?: string;
+  isLocked?: boolean;
 }
 
 const itemVariants = {
@@ -32,12 +34,14 @@ export const PinBadge: React.FC<PinBadgeProps> = ({
   onClick,
   size = 250,
   position,
+  isLocked = false,
 }) => {
   return (
     <div
       className={`absolute ${position} transform -translate-x-1/2 -translate-y-1/2`}
     >
       <motion.button
+        disabled={isLocked}
         className="pin-badge relative cursor-pointer"
         onClick={onClick}
         style={{
@@ -59,6 +63,18 @@ export const PinBadge: React.FC<PinBadgeProps> = ({
         whileTap={{ scale: 0.9 }}
         variants={itemVariants}
       >
+        {isLocked && (
+          <div
+            className="rounded-full absolute inset-0 z-50 bg-gray-50 opacity-50 flex items-center justify-center"
+            style={{
+              width: size,
+              height: size,
+            }}
+          >
+            <Lock size={80} />
+          </div>
+        )}
+
         <motion.div
           className={`absolute text-nowrap -bottom-12 left-1/2 transform -translate-x-1/2 text-xl font-bold text-center text-gray-50 transition-transform duration-300 group-hover:scale-105`}
           animate={{

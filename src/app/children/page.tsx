@@ -164,7 +164,7 @@ function ChildrenSelection() {
       ) : (
         <div>
           <h5 className="col-span-2 text-4xl font-bold mb-1 text-gray-900">
-            Welcome, {`${parentInfo?.parent.firstname}`}!
+            Welcome, {parentInfo?.parent.firstname}!
           </h5>
 
           <Alert className="my-4">

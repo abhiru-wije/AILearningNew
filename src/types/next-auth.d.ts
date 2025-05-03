@@ -5,6 +5,11 @@ declare module "next-auth" {
     user: {
       id: string;
       // add any other user fields you attach to the session
+
+      firstname: string;
+      lastname: string;
+      class: string;
+      dob: string;
     } & DefaultSession["user"];
     access_token: string;
   }
@@ -12,7 +17,10 @@ declare module "next-auth" {
   interface User {
     id: string;
     access_token: string;
-    // add other fields if your backend sends them
+    firstname: string;
+    lastname: string;
+    class: string;
+    dob: string;
   }
 }
 
@@ -20,6 +28,11 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string;
     access_token: string;
+
+    firstname: string;
+    lastname: string;
+    class: string;
+    dob: string;
     // any other token fields
   }
 }
