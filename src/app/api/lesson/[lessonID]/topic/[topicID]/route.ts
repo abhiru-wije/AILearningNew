@@ -7,12 +7,9 @@ interface ErrorResponse {
   [key: string]: any;
 }
 
-export async function POST(
-  request: Request,
-  { params }: { params: { lessonID: string; topicID: string } }
-) {
+export async function POST(request: Request, params: any) {
   try {
-    const param = await params;
+    const param = await params.params;
 
     const token = request.headers.get("authorization");
 

@@ -1,14 +1,10 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import LevelIntroClient from "@/app/components/LevelIntroClient";
 import { API_ENDPOINTS } from "@/config/api";
+import { authOptions } from "@/config/auth-options";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 
-export default async function LevelIntroPage({
-  params,
-}: {
-  params: { lessonID: string };
-}) {
+export default async function LevelIntroPage({ params }: { params: any }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.access_token) {

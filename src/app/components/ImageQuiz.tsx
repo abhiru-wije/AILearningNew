@@ -77,6 +77,7 @@ export default function ImageQuiz({
   const [winReady, setwinReady] = useState(false);
 
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isFail, setIsFail] = useState(false);
 
   const handleSubmit = (
     rows: IRows,
@@ -100,7 +101,7 @@ export default function ImageQuiz({
 
       // onSuccess();
     } else {
-      console.log("Oops! That is the wrong answer");
+      setIsFail(true);
       setRows({
         Question: {
           items: items,
@@ -156,6 +157,31 @@ export default function ImageQuiz({
           </div>
         )}
 
+        {isFail && (
+          <div className="fixed inset-0 bg-white/30 backdrop-blur-sm z-50 flex items-center justify-center">
+            <div className="flex items-center gap-5">
+              <div className="w-96 h-56 -mt-12 bg-orange-100 rounded-[38.92px] shadow-[0px_5.189272880554199px_0px_0px_rgba(255,201,119,1.00)] relative flex flex-col items-center justify-center">
+                <Image
+                  src="/assets/images/winner_top.svg"
+                  alt="Bright Buddy Logo"
+                  width={200}
+                  height={200}
+                  className="w-96 h-auto -top-48 left-0 right-0 absolute mx-auto"
+                />
+
+                <p className="text-lg">Oops! Mix the letters a bit more!</p>
+
+                <button
+                  className="cursor-pointer button-red kids-button mt-3"
+                  onClick={() => setIsFail(false)}
+                >
+                  Retry
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <DragDropContext
           onDragEnd={(result) => services.onDragEnd(result, rows, setRows)}
         >
@@ -166,7 +192,7 @@ export default function ImageQuiz({
 
             <div className="flex flex-col space-y-1 my-1 items-center">
               {quizDetails.instructions.map((instruction) => (
-                <p>{instruction}</p>
+                <p key={instruction}>{instruction}</p>
               ))}
             </div>
 

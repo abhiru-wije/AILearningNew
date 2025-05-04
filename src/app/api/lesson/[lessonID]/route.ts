@@ -7,12 +7,9 @@ interface ErrorResponse {
   [key: string]: any;
 }
 
-export async function GET(
-  request: Request,
-  { params }: { params: { lessonID: string } }
-) {
+export async function GET(request: Request, params: any) {
   try {
-    const param = await params;
+    const param = await params.params;
 
     const lessonID = param.lessonID;
     const token = request.headers.get("authorization");

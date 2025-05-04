@@ -1,5 +1,5 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import QuizStepper from "@/app/components/QuizStepper";
+import { authOptions } from "@/config/auth-options";
 import { IQuizInfo } from "@/types/types";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
@@ -31,11 +31,7 @@ const DATA: IQuizInfo = {
   ],
 };
 
-export default async function Quiz({
-  params,
-}: {
-  params: { lessonID: string };
-}) {
+export default async function Quiz({ params }: { params: any }) {
   const session = await getServerSession(authOptions);
 
   if (!session || !session.access_token) {

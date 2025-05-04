@@ -12,30 +12,35 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Progress } from "@/components/ui/progress";
-import { ChildSignupResponse, NewChildInfo, ParentInfo } from "@/types/api";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { UserPlus } from "lucide-react";
+import { ChildSignupResponse, ParentInfo } from "@/types/api";
+import { format } from "date-fns";
+import { Calendar as CalendarIcon, UserPlus } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, Suspense} from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import * as yup from "yup";
 
-const childSchema = yup
-  .object({
-    firstname: yup.string().required("First name is required"),
-    lastname: yup.string().required("Last name is required"),
-    class: yup.string().required("Class is required"),
-  })
-  .required();
-
-type FormData = {
-  firstname: string;
-  lastname: string;
-  class: string;
-};
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { ChildFormSchema } from "@/lib/form-utils";
 
 function ChildrenSelection() {
   const router = useRouter();
@@ -56,16 +61,11 @@ function ChildrenSelection() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const { register, handleSubmit } = useForm<FormData>({
-    resolver: yupResolver(childSchema) as any,
-    defaultValues: {
-      firstname: "",
-      lastname: "",
-      class: "",
-    },
+  const form = useForm<z.infer<typeof ChildFormSchema>>({
+    resolver: zodResolver(ChildFormSchema),
   });
 
-  const handleAddChild = async (data: NewChildInfo) => {
+  async function onSubmit(data: z.infer<typeof ChildFormSchema>) {
     setLoading(true);
     const reqBody = {
       ...data,
@@ -94,7 +94,7 @@ function ChildrenSelection() {
       setAddDialogOpen(false);
       setCreatedChild(result);
     }
-  };
+  }
 
   const handleChildSelect = async (childId: string) => {
     setLoading(true);
@@ -163,9 +163,19 @@ function ChildrenSelection() {
         </Card>
       ) : (
         <div>
-          <h5 className="col-span-2 text-4xl font-bold mb-1 text-gray-900">
-            Welcome, {parentInfo?.parent.firstname}!
-          </h5>
+          <div className="flex items-center justify-between mb-4">
+            <h5 className="col-span-2 text-4xl font-bold mb-1 text-gray-900">
+              Welcome, {`${parentInfo?.parent.firstname}`}!
+            </h5>
+
+            <Button
+              onClick={() => router.push("/login")}
+              className="cursor-pointer"
+              variant="outline"
+            >
+              Logout
+            </Button>
+          </div>
 
           <Alert className="my-4">
             <AlertDescription>
@@ -177,7 +187,7 @@ function ChildrenSelection() {
             {parentInfo?.children.map((child) => (
               <Card
                 key={child._id}
-                className="cursor-pointer"
+                className="cursor-pointer hover:shadow-lg transition-shadow duration-200"
                 onClick={() => handleChildSelect(child._id)}
                 aria-disabled={loading}
               >
@@ -205,17 +215,21 @@ function ChildrenSelection() {
             <Card
               key={createdChild._id}
               onClick={() => handleChildSelect(createdChild._id)}
-              className="bg-[#ADD8E6] flex flex-col items-center cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-99"
+              className="cursor-pointer"
             >
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-4">
-                  <div>
-                    <h3 className="text-xl font-semibold text-[#161F6F]">
-                      {createdChild.firstname} {createdChild.lastname}
-                    </h3>
-                    <p className="text-[#3669D5]">
-                      Class: {createdChild.class}
-                    </p>
+              <CardHeader className="flex items-center space-x-4">
+                <Avatar>
+                  <AvatarFallback>{createdChild.firstname?.[0]}</AvatarFallback>
+                </Avatar>
+                <CardTitle>
+                  {createdChild.firstname} {createdChild.lastname}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  <div className="flex justify-start text-sm gap-3">
+                    <span>Class</span>
+                    <span>{createdChild.class}</span>
                   </div>
                 </div>
               </CardContent>
@@ -226,72 +240,122 @@ function ChildrenSelection() {
 
       <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
         <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add New Child</DialogTitle>
-            <DialogDescription>
-              Enter the details of your child to add them to your account.
-            </DialogDescription>
-          </DialogHeader>
-          <form onSubmit={handleSubmit(handleAddChild)}>
-            <div className="grid gap-4 py-4">
-              <div className="grid grid-cols-4 items-center gap-4">
-                <label htmlFor="firstname" className="text-right">
-                  First Name
-                </label>
-                <input
-                  id="firstname"
-                  {...register("firstname")}
-                  className="col-span-3 h-10 rounded-md border border-input bg-background px-3 py-2"
-                  placeholder="Child's first name"
-                />
-              </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <DialogHeader>
+                <DialogTitle>Add New Child</DialogTitle>
+                <DialogDescription>
+                  Enter the details of your child to add them to your account.
+                </DialogDescription>
+              </DialogHeader>
 
-              <div className="grid grid-cols-4 items-center gap-4">
-                <label htmlFor="lastname" className="text-right">
-                  Last Name
-                </label>
-                <input
-                  id="lastname"
-                  {...register("lastname")}
-                  className="col-span-3 h-10 rounded-md border border-input bg-background px-3 py-2"
-                  placeholder="Child's last name"
-                />
-              </div>
+              <FormField
+                control={form.control}
+                name="firstname"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Fist Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="First Name" {...field} />
+                    </FormControl>
 
-              <div className="grid grid-cols-4 items-center gap-4">
-                <label htmlFor="class" className="text-right">
-                  Class
-                </label>
-                <input
-                  id="class"
-                  {...register("class")}
-                  className="col-span-3 h-10 rounded-md border border-input bg-background px-3 py-2"
-                  placeholder="Child's class"
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setAddDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button type="submit">Add Child</Button>
-            </DialogFooter>
-          </form>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="lastname"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Last Name" {...field} />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="class"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Class</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Class" {...field} />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="dob"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Date of birth</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full pl-3 text-left font-normal",
+                              !field.value && "text-muted-foreground"
+                            )}
+                          >
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={field.value}
+                          onSelect={field.onChange}
+                          disabled={(date) =>
+                            date > new Date() || date < new Date("1900-01-01")
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormDescription>
+                      Your date of birth is used to calculate your child's age.
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => setAddDialogOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" className="cursor-pointer">
+                  Add Child
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </div>
   );
 }
 
-export default function ChildSelection() {
- 
-  return (
- 
-    <Suspense fallback={<div>Loading...</div>}>
- 
-      <ChildrenSelection />
- 
-    </Suspense>
- 
-  );
-}
+export default ChildrenSelection;

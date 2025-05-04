@@ -1,9 +1,9 @@
 import { API_ENDPOINTS } from "@/config/api";
+import { authOptions } from "@/config/auth-options";
 import axios from "axios";
 import { Lock } from "lucide-react";
 import { getServerSession } from "next-auth";
 import Link from "next/link";
-import { authOptions } from "../api/auth/[...nextauth]/route";
 
 export default async function LessonsPage() {
   const session = await getServerSession(authOptions);
