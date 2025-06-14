@@ -114,7 +114,7 @@ export default function ImageQuiz({
   };
 
   const goToNextLevel = () => {
-    router.push("/lessons");
+    router.push(`/lessons/${lessonID}/quiz2`);
   };
 
   useEffect(() => {

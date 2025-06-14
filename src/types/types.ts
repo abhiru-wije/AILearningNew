@@ -31,6 +31,19 @@ export interface QuizItem {
   answer: string;
 }
 
+export interface IImageQuizInfo {
+  lesson: ILesson;
+  quiz: ImageQuizItem[];
+}
+
+export interface ImageQuizItem {
+  name: string;
+  type: "image" | "text" | string;
+  instructions: string[];
+  answer: string[];
+  questions: string[];
+}
+
 export interface IItem {
   id: string;
   content: string;

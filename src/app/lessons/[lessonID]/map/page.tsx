@@ -48,8 +48,14 @@ const mapSteps = [
   },
   {
     id: 7,
-    title: "Quiz",
+    title: "Quiz 1",
     position: "top-[130%] left-[40%]",
+    image: "/assets/images/quiz.png",
+  },
+  {
+    id: 8,
+    title: "Quiz 2",
+    position: "top-[150%] right-[20%]",
     image: "/assets/images/quiz.png",
   },
 ];
@@ -291,6 +297,15 @@ export default function Map() {
               title={mapSteps[6].title}
               isLocked={!lessonDetails?.isLessonDone}
               onClick={() => router.push(`/lessons/${levelID}/quiz`)}
+            />
+
+            <PinBadge
+              key={mapSteps[7].id}
+              position={mapSteps[7].position}
+              image={mapSteps[7].image}
+              title={mapSteps[7].title}
+              isLocked={!lessonDetails?.isLessonDone}
+              onClick={() => router.push(`/lessons/${levelID}/quiz2`)}
             />
           </motion.div>
         </div>
